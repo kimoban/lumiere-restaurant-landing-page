@@ -2,9 +2,14 @@ import {
   type MenuItem,
   type EventDetails,
   type Story,
+  type Reservation,
+  type ReservationRequest,
   type TastingExperience,
   type SocialProof,
+  reservationsTable,
 } from "../shared/schema";
+import { randomUUID } from "crypto";
+import { getDb } from "./db";
 
 const USD_TO_GHS = 15.5;
 
@@ -16,11 +21,14 @@ export interface IStorage {
   getMenuItems(): Promise<MenuItem[]>;
   getEventDetails(): Promise<EventDetails>;
   getStory(): Promise<Story>;
+  createReservation(reservation: ReservationRequest): Promise<Reservation>;
   getTastingExperience(): Promise<TastingExperience>;
   getSocialProof(): Promise<SocialProof>;
 }
 
 export class MemStorage implements IStorage {
+  private reservations: Reservation[] = [];
+
   private menuItems: MenuItem[] = [
     {
       id: "1",
@@ -86,8 +94,21 @@ export class MemStorage implements IStorage {
         lng: -1.2466,
       },
     },
+    openingHours: [
+      { days: "Tuesday to Thursday", hours: "12:30 PM to 3:00 PM, 6:30 PM to 10:00 PM" },
+      { days: "Friday to Saturday", hours: "12:30 PM to 3:30 PM, 6:30 PM to 11:00 PM" },
+      { days: "Sunday", hours: "1:00 PM to 8:30 PM" },
+      { days: "Monday", hours: "Closed" },
+    ],
     seatingInfo: "Limited to 24 guests per seating. Reservations required.",
     parkingInfo: "On-site guest parking available. Local taxi and ride services offer convenient access across Cape Coast.",
+    dressCode: "Smart elegant. Linen separates, relaxed tailoring, and evening footwear are welcome.",
+    landmarkDirections: [
+      "Five minutes from Cape Coast Castle and the old seafront road.",
+      "Follow the ridge toward the historic district and look for the cream stone facade beside the palm courtyard.",
+      "Guests arriving from UCC can expect a 15-minute drive outside peak traffic.",
+    ],
+    reservationSlots: ["12:30 PM", "1:00 PM", "6:30 PM", "7:15 PM", "8:00 PM", "8:45 PM"],
     contactEmail: "reservations@lumierecapecoast.com",
     contactPhone: "+233 20 555 1234",
   };
@@ -186,6 +207,47 @@ export class MemStorage implements IStorage {
 
   async getStory(): Promise<Story> {
     return this.story;
+  }
+
+  async createReservation(reservation: ReservationRequest): Promise<Reservation> {
+    const db = getDb();
+    const reservationId = `LMR-${randomUUID().slice(0, 8).toUpperCase()}`;
+
+    if (db) {
+      const [createdReservation] = await db
+        .insert(reservationsTable)
+        .values({
+          id: reservationId,
+          guestName: reservation.guestName,
+          guestEmail: reservation.guestEmail,
+          date: reservation.date,
+          time: reservation.time,
+          partySize: reservation.partySize,
+          status: "pending",
+        })
+        .returning();
+
+      return {
+        id: createdReservation.id,
+        guestName: createdReservation.guestName,
+        guestEmail: createdReservation.guestEmail,
+        date: createdReservation.date,
+        time: createdReservation.time,
+        partySize: createdReservation.partySize,
+        status: createdReservation.status as Reservation["status"],
+        createdAt: createdReservation.createdAt.toISOString(),
+      };
+    }
+
+    const createdReservation: Reservation = {
+      id: reservationId,
+      status: "pending",
+      createdAt: new Date().toISOString(),
+      ...reservation,
+    };
+
+    this.reservations.push(createdReservation);
+    return createdReservation;
   }
 
   async getTastingExperience(): Promise<TastingExperience> {

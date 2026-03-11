@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { reservationRequestSchema } from "../shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/menu", async (_req, res) => {
@@ -27,6 +28,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(story);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch story" });
+    }
+  });
+
+  app.post("/api/reservations", async (req, res) => {
+    const parsed = reservationRequestSchema.safeParse(req.body);
+
+    if (!parsed.success) {
+      return res.status(400).json({ error: "Invalid reservation request" });
+    }
+
+    try {
+      const reservation = await storage.createReservation(parsed.data);
+      res.status(201).json(reservation);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create reservation" });
     }
   });
 

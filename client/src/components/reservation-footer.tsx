@@ -20,7 +20,7 @@ export function ReservationFooter() {
 
   return (
     <footer
-      id="reserve"
+      id="contact"
       className="relative py-24 md:py-32 px-6 bg-primary text-primary-foreground overflow-hidden"
       data-testid="section-footer"
     >

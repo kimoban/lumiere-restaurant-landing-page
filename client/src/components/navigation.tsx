@@ -41,6 +41,13 @@ export function Navigation() {
 
           <div className="hidden md:flex items-center gap-8">
             <button
+              onClick={() => scrollToSection("reserve")}
+              className="text-sm font-body font-medium text-foreground/80 hover:text-foreground transition-colors"
+              data-testid="link-reserve"
+            >
+              Reserve
+            </button>
+            <button
               onClick={() => scrollToSection("story")}
               className="text-sm font-body font-medium text-foreground/80 hover:text-foreground transition-colors"
               data-testid="link-story"
@@ -57,17 +64,17 @@ export function Navigation() {
             <button
               onClick={() => scrollToSection("details")}
               className="text-sm font-body font-medium text-foreground/80 hover:text-foreground transition-colors"
-              data-testid="link-details"
+              data-testid="link-arrival"
             >
-              Details
+              Arrival
             </button>
             <Button
-              onClick={() => scrollToSection("reserve")}
+              onClick={() => scrollToSection("contact")}
               variant="default"
               size="default"
               data-testid="button-reserve-nav"
             >
-              Reserve
+              Contact
             </Button>
           </div>
         </div>

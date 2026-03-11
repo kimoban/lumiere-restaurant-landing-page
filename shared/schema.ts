@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 export const menuItemSchema = z.object({
   id: z.string(),
@@ -7,6 +8,36 @@ export const menuItemSchema = z.object({
   price: z.number(),
   category: z.enum(["appetizer", "entree", "dessert"]),
   imageUrl: z.string(),
+});
+
+export const openingHoursEntrySchema = z.object({
+  days: z.string(),
+  hours: z.string(),
+});
+
+export const reservationRequestSchema = z.object({
+  guestName: z.string().min(2),
+  guestEmail: z.string().email(),
+  date: z.string(),
+  time: z.string(),
+  partySize: z.string(),
+});
+
+export const reservationSchema = reservationRequestSchema.extend({
+  id: z.string(),
+  status: z.enum(["pending", "confirmed"]),
+  createdAt: z.string(),
+});
+
+export const reservationsTable = pgTable("reservations", {
+  id: varchar("id", { length: 32 }).primaryKey(),
+  guestName: text("guest_name").notNull(),
+  guestEmail: text("guest_email").notNull(),
+  date: text("date").notNull(),
+  time: text("time").notNull(),
+  partySize: text("party_size").notNull(),
+  status: varchar("status", { length: 16 }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 
 export const eventDetailsSchema = z.object({
@@ -23,8 +54,12 @@ export const eventDetailsSchema = z.object({
       lng: z.number(),
     }),
   }),
+  openingHours: z.array(openingHoursEntrySchema),
   seatingInfo: z.string(),
   parkingInfo: z.string(),
+  dressCode: z.string(),
+  landmarkDirections: z.array(z.string()),
+  reservationSlots: z.array(z.string()),
   contactEmail: z.string(),
   contactPhone: z.string(),
 });
@@ -70,6 +105,8 @@ export const socialProofSchema = z.object({
 export type MenuItem = z.infer<typeof menuItemSchema>;
 export type EventDetails = z.infer<typeof eventDetailsSchema>;
 export type Story = z.infer<typeof storySchema>;
+export type ReservationRequest = z.infer<typeof reservationRequestSchema>;
+export type Reservation = z.infer<typeof reservationSchema>;
 export type TastingCourse = z.infer<typeof tastingCourseSchema>;
 export type TastingExperience = z.infer<typeof tastingExperienceSchema>;
 export type Testimonial = z.infer<typeof testimonialSchema>;

@@ -1,4 +1,5 @@
 import { HeroSection } from "@/components/hero-section";
+import { ReservationWidget } from "@/components/reservation-widget";
 import { StorySection } from "@/components/story-section";
 import { ChefsTasting } from "@/components/chefs-tasting";
 import { MenuHighlights } from "@/components/menu-highlights";
@@ -14,6 +15,7 @@ export default function Home() {
     <div className="min-h-screen">
       <Navigation />
       <HeroSection />
+      <ReservationWidget />
       <StorySection />
       <ChefsTasting />
       <MenuHighlights />
