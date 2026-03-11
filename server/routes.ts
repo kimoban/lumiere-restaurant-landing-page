@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { reservationRequestSchema } from "../shared/schema";
+import { createReservationAndNotify } from "./reservation-service";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/menu", async (_req, res) => {
@@ -39,7 +40,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      const reservation = await storage.createReservation(parsed.data);
+      const reservation = await createReservationAndNotify(parsed.data);
       res.status(201).json(reservation);
     } catch (error) {
       res.status(500).json({ error: "Failed to create reservation" });

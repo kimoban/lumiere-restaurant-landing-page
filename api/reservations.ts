@@ -1,5 +1,5 @@
 import { reservationRequestSchema } from "../shared/schema";
-import { storage } from "../server/storage";
+import { createReservationAndNotify } from "../server/reservation-service";
 
 export default async function handler(req: any, res: any) {
   if (req.method !== "POST") {
@@ -13,7 +13,7 @@ export default async function handler(req: any, res: any) {
     return res.status(400).json({ error: "Invalid reservation request" });
   }
 
-  const reservation = await storage.createReservation(parsed.data);
+  const reservation = await createReservationAndNotify(parsed.data);
 
   return res.status(201).json(reservation);
 }

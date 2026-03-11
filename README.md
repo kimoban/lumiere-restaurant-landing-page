@@ -53,6 +53,7 @@ Available via Vercel functions or the Express server:
 - `GET /api/menu`
 - `GET /api/event-details`
 - `GET /api/story`
+- `POST /api/reservations`
 - `GET /api/tasting-experience`
 - `GET /api/social-proof`
 
@@ -63,6 +64,14 @@ You can override response payloads in serverless mode with the following environ
 - `STORY_JSON`
 - `TASTING_EXPERIENCE_JSON`
 - `SOCIAL_PROOF_JSON`
+
+Reservation persistence and notifications use environment configuration:
+
+- `DATABASE_URL`: required to persist reservation requests to Postgres via Drizzle
+- `ADMIN_NOTIFICATION_EMAIL`: admin inbox for reservation notifications
+- `RESEND_API_KEY`: enables email notifications through Resend
+- `RESERVATION_FROM_EMAIL`: optional sender identity for reservation emails
+- `ADMIN_NOTIFICATION_WEBHOOK_URL`: optional webhook target for reservation-created events
 
 Example (PowerShell):
 
@@ -79,6 +88,12 @@ npm run start
 ```
 
 The build output is emitted to [dist/public](dist/public) as configured in [vite.config.ts](vite.config.ts).
+
+To create the reservations table in a configured database:
+
+```powershell
+npm run db:push
+```
 
 ## Deploy (Vercel)
 
