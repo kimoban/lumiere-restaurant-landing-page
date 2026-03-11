@@ -53,12 +53,16 @@ Available via Vercel functions or the Express server:
 - `GET /api/menu`
 - `GET /api/event-details`
 - `GET /api/story`
+- `GET /api/tasting-experience`
+- `GET /api/social-proof`
 
 You can override response payloads in serverless mode with the following environment variables (each expects JSON):
 
 - `MENU_ITEMS_JSON`
 - `EVENT_DETAILS_JSON`
 - `STORY_JSON`
+- `TASTING_EXPERIENCE_JSON`
+- `SOCIAL_PROOF_JSON`
 
 Example (PowerShell):
 

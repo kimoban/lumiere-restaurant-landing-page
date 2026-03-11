@@ -30,6 +30,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/tasting-experience", async (_req, res) => {
+    try {
+      const tastingExperience = await storage.getTastingExperience();
+      res.json(tastingExperience);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch tasting experience" });
+    }
+  });
+
+  app.get("/api/social-proof", async (_req, res) => {
+    try {
+      const socialProof = await storage.getSocialProof();
+      res.json(socialProof);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch social proof" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;

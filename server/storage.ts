@@ -1,4 +1,10 @@
-import { type MenuItem, type EventDetails, type Story } from "../shared/schema";
+import {
+  type MenuItem,
+  type EventDetails,
+  type Story,
+  type TastingExperience,
+  type SocialProof,
+} from "../shared/schema";
 
 const USD_TO_GHS = 15.5;
 
@@ -10,6 +16,8 @@ export interface IStorage {
   getMenuItems(): Promise<MenuItem[]>;
   getEventDetails(): Promise<EventDetails>;
   getStory(): Promise<Story>;
+  getTastingExperience(): Promise<TastingExperience>;
+  getSocialProof(): Promise<SocialProof>;
 }
 
 export class MemStorage implements IStorage {
@@ -93,6 +101,81 @@ export class MemStorage implements IStorage {
     ],
   };
 
+  private tastingExperience: TastingExperience = {
+    title: "Chef's Tasting",
+    subtitle:
+      "A seasonal progression built around the Atlantic catch, Central Region produce, and Lumiere's quiet, fire-led kitchen.",
+    experienceName: "Six-Course Coastal Tasting",
+    description:
+      "Designed for lingering evenings, the tasting menu moves from bright shellfish and market herbs into richer coastal mains before closing with Ghana cocoa and tropical fruit.",
+    price: toCedis(72),
+    serviceWindow: "Offered Thursday to Sunday from 6:30 PM with optional wine pairing.",
+    availabilityNote: "Limited to 18 tasting menus each evening. Advance reservation recommended.",
+    winePairingNote: "Optional three-glass pairing curated around citrus, minerality, and spice.",
+    ctaLabel: "Reserve the Tasting",
+    courses: [
+      {
+        course: "Course 1",
+        title: "Sobolo Oyster",
+        description: "Atlantic oyster, chilled sobolo granita, lime leaf oil.",
+      },
+      {
+        course: "Course 2",
+        title: "Market Prawn Broth",
+        description: "Light shellfish broth with ginger, herbs, and smoked chili.",
+      },
+      {
+        course: "Course 3",
+        title: "Charred Octopus Suya",
+        description: "Wood-fired octopus with sweet plantain and herb relish.",
+      },
+      {
+        course: "Course 4",
+        title: "Fanti Catch",
+        description: "Line-caught fish, coconut emulsion, kontomire greens, crisp banku crumb.",
+      },
+      {
+        course: "Course 5",
+        title: "Fire-Roasted Guinea Fowl",
+        description: "Spiced jus, grilled garden vegetables, and tamarind glaze.",
+      },
+      {
+        course: "Course 6",
+        title: "Cocoa Cloud",
+        description: "Warm cocoa mousse, sea salt caramel, and roasted pineapple cream.",
+      },
+    ],
+  };
+
+  private socialProof: SocialProof = {
+    title: "Guests and Press",
+    subtitle:
+      "A few of the voices that describe Lumiere best: quietly elegant, deeply coastal, and worth returning to.",
+    reviewSummary:
+      "Recommended by returning guests for anniversary dinners, hosted evenings, and Cape Coast weekend reservations.",
+    testimonials: [
+      {
+        quote:
+          "The tasting menu felt grounded in Cape Coast without ever becoming predictable. Every course had confidence and restraint.",
+        guestName: "Adwoa Mensah",
+        guestContext: "Anniversary dinner guest",
+      },
+      {
+        quote:
+          "Service was calm, informed, and precise. Lumiere feels like the kind of place you plan an evening around.",
+        guestName: "Kojo Brew",
+        guestContext: "Weekend dining guest",
+      },
+      {
+        quote:
+          "The room, the seafood, and the cocoa dessert all landed exactly where a fine dining experience should: memorable, not overstated.",
+        guestName: "Esi Hammond",
+        guestContext: "Private supper attendee",
+      },
+    ],
+    pressMentions: ["Cape Coast Table", "The Coastal Edit", "Accra Weekend", "Ghana Fine Dining Guide"],
+  };
+
   async getMenuItems(): Promise<MenuItem[]> {
     return this.menuItems;
   }
@@ -103,6 +186,14 @@ export class MemStorage implements IStorage {
 
   async getStory(): Promise<Story> {
     return this.story;
+  }
+
+  async getTastingExperience(): Promise<TastingExperience> {
+    return this.tastingExperience;
+  }
+
+  async getSocialProof(): Promise<SocialProof> {
+    return this.socialProof;
   }
 }
 
